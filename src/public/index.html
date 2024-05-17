@@ -1,0 +1,51 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/13.0.0/material-components-web.min.css">
+    <!-- Дополнительные стили -->
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+<body>
+    <h1>Добро пожаловать с систему голосования</h1>
+    
+    <div id="loginForm">
+        <h2>Вход</h2>
+        <label for="loginUsername">Логин:</label>
+        <input type="text" id="loginUsername" name="loginUsername" placeholder="Логин">
+        <label for="loginPassword">Пароль:</label>
+        <input type="password" id="loginPassword" name="loginPassword" placeholder="Пароль">
+        <button id="loginButton" class = "indexButton">Вход</button>
+        <button id="registerSwitch" class = "indexButton">Регистрация</button>
+    </div>
+
+    <div id="registerForm" style="display: none;">
+        <h2>Регистрация</h2>
+        <label for="registerUsername">Логин:</label>
+        <input type="text" id="registerUsername" name="registerUsername" placeholder="Логин"required>
+        <label for="registerEmail">Email:</label>
+        <input type="text" id="registerEmail" name="registerEmail" placeholder="Email"required>
+        <label for="registerPassword">Пароль:</label>
+        <input type="password" id="registerPassword" name="registerPassword" placeholder="Пароль"required>
+        <div></div>
+        <label for="registerFirstname">Имя:</label>
+        <input type="text" id="registerFirstname" name="registerFirstname" placeholder="Имя"required>
+        <label for="registerSurname">Фамилия:</label>
+        <input type="text" id="registerSurname" name="registerSurname" placeholder="Фамилия" required>
+        <label for="registerThirdname">Отчество:</label>
+        <input type="text" id="registerThirdname" name="registerThirdname" placeholder="Отчество" required>
+        <button id="registerButton" class = "indexButton">Регистрация</button>
+        <button id="loginSwitch" class = "indexButton">Вход</button>
+    </div>
+
+    <div id="errorMessage" style="color: red; display: none;"></div>
+
+    <script src="index.js"></script>
+</body>
+</html>

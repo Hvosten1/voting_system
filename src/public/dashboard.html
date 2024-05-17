@@ -1,0 +1,77 @@
+<!-- dashboard.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/material-components-web/13.0.0/material-components-web.min.css">
+    <!-- Дополнительные стили -->
+    <link rel="stylesheet" href="./styles/styles.css">
+</head>
+<body>
+    <div id="tabs"></div>
+    <h1 id="voteHeader">Панель голосований</h1>
+    <div id="votesContainer">
+        
+        <!-- Здесь будет список голосований -->
+    </div>
+    <div id="votingFormContainer"></div>
+        
+
+    <div id="participatedVotesContainer"></div>
+
+
+    <!-- Кнопка для создания нового голосования -->
+    <button id="createVoteButton" style="display: none;" onclick="toggleCreateForm()">Создать новое голосование</button>
+
+    <div id="createForm" style="display: none;">
+        <h3>Создание нового голосования</h3>
+        <form id="voteForm">
+            <label for="voteTitle">Название:</label>
+            <input type="text" id="voteTitle" name="voteTitle"><br>
+            <label for="participants">Участники:</label>
+            <select id="participants" name="participants" multiple>
+    
+            </select><br>
+            <label for="options">Кандидаты:</label>
+            <textarea id="options" name="options"></textarea><br>
+            <label for="startDate">Дата начала:</label>
+            <input type="date" id="startDate" name="startDate"><br>
+            <label for="endDate">Дата окончания:</label>
+            <input type="date" id="endDate" name="endDate"><br>
+            <button type="submit" class="button">Создать</button>
+        </form>
+    </div>
+
+
+    
+    <h1 id = "questionsHeader">Вопросы</h1>
+    <!-- Форма для отправки вопроса -->
+    <div class="container">
+        <div id="questionContainer"></div>
+    </div>
+    <h1 id = "usersHeader">Пользователи</h1>
+    <div id="usersContainer">
+        
+    </div>
+    <h1 id = "blockchainHeader">Поиск в блокчейне</h1>
+    <div id="blockchainSearchContainer">
+        <input id ="secretKeyInput"></input>
+        <button id = "searchBlockchainButton" class = "button">Поиск</button>
+        <div id="blockchainInfoContainer"></div>
+        
+    </div>
+
+   
+
+    <button id="logoutButton">Выйти</button>
+
+    <script src="dashboard.js"></script>
+    <script src="questions.js"></script>
+    
+</body>
+</html>
