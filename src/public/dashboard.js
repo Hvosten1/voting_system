@@ -181,7 +181,7 @@ function participateInVoting(votingId, card, participateButton) {
             });
   
             const userCodeInput = document.createElement('input');
-            userCodeInput.type = 'hidden';
+            userCodeInput.type = 'block';
             userCodeInput.name = 'userCode';
             userCodeInput.value = userCode;
   
