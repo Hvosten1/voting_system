@@ -8,11 +8,12 @@ const db = require("../models/db")
 
 const connection = db
 
+const privateKeyDir='C:/Users/dogre/Documents/voting_system/src/private_key.pem'
 
 const makeVote = (req, res) => {
     const { encryptedVotingId, encryptedUserId, encryptedCandidateId, encryptedUserCode } = req.body;
 
-    const privateKey = fs.readFileSync('C:/Users/dogre/Documents/voting_system/src/private_key.pem', 'utf8');
+    const privateKey = fs.readFileSync(privateKeyDir, 'utf8');
   
     const decrypt = (encryptedData) => {
       return crypto.privateDecrypt(
