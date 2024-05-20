@@ -114,35 +114,41 @@ function generateUniqueCode(length = 6) {
 }
 
 
-// Функция для получения публичного ключа с сервера
 async function fetchPublicKey() {
     const response = await fetch('/public-key');
     const publicKeyPem = await response.text();
     const publicKey = await crypto.subtle.importKey(
-        'spki',
-        pemToArrayBuffer(publicKeyPem),
-        { name: 'RSA-OAEP', hash: { name: 'SHA-256' } },
-        false,
-        ['encrypt']
+      'spki',
+      pemToArrayBuffer(publicKeyPem),
+      { name: 'RSA-OAEP', hash: { name: 'SHA-256' } },
+      false,
+      ['encrypt']
     );
     return publicKey;
-}
-
-function pemToArrayBuffer(pem) {
-    // Удаляем все символы, не являющиеся Base64 символами, из PEM-строки
-    const base64 = pem.replace(/[^A-Za-z0-9+/=]/g, '');
-
-    // Декодируем Base64 строку в бинарные данные
+  }
+  
+  function pemToArrayBuffer(pem) {
+    const base64 = pem.replace(/(-----(BEGIN|END) PUBLIC KEY-----|\n)/g, '');
     const binaryString = window.atob(base64);
-
-    // Преобразуем бинарные данные в массив байтов
     const bytes = new Uint8Array(binaryString.length);
     for (let i = 0; i < binaryString.length; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
+      bytes[i] = binaryString.charCodeAt(i);
     }
-
     return bytes.buffer;
-}
+  }
+  
+  async function encryptData(data, publicKey) {
+    const encoder = new TextEncoder();
+    const encodedData = encoder.encode(data);
+    const encryptedData = await crypto.subtle.encrypt(
+      {
+        name: 'RSA-OAEP',
+      },
+      publicKey,
+      encodedData
+    );
+    return btoa(String.fromCharCode(...new Uint8Array(encryptedData)));
+  }
 
 
 
@@ -151,100 +157,91 @@ function pemToArrayBuffer(pem) {
 
 // Обновленный код функции participateInVoting
 function participateInVoting(votingId, card, participateButton) {
-    // Генерируем уникальный код пользователя
-    const userCode = generateUniqueCode(); // Функция generateUniqueCode() должна быть реализована
-    console.log(votingId);
-
-    // Получаем список кандидатов для выбора
-    fetch(`/api/dashboard/candidates/${votingId}`)
-        .then(response => response.json())
-        .then(candidates => {
-            // Создаем форму выбора кандидатов
+    const userCode = generateUniqueCode();
+    let cand_name = '';
+  
+    fetchPublicKey()
+      .then(publicKey => {
+        fetch(`/api/dashboard/candidates/${votingId}`)
+          .then(response => response.json())
+          .then(candidates => {
             const form = document.createElement('form');
-            
             form.classList.add('voting-form');
-            form.style.display = 'inline-grid';
-            console.log(candidates);
-
+  
             candidates.forEach(candidate => {
-                const checkboxLabel = document.createElement('label');
-                checkboxLabel.textContent = candidate.v_option;
-
-                const checkbox = document.createElement('input');
-                checkbox.setAttribute('type', 'checkbox');
-                checkbox.setAttribute('name', 'candidate');
-                checkbox.setAttribute('value', candidate.v_option);
-
-                checkboxLabel.appendChild(checkbox);
-                form.appendChild(checkboxLabel);
+              const label = document.createElement('label');
+              const checkbox = document.createElement('input');
+              checkbox.type = 'checkbox';
+              checkbox.name = 'candidate';
+              checkbox.value = candidate.v_option;
+              label.appendChild(checkbox);
+              label.appendChild(document.createTextNode(candidate.v_option));
+              form.appendChild(label);
+              form.appendChild(document.createElement('br'));
             });
-
+  
             const userCodeInput = document.createElement('input');
-            //userCodeInput.setAttribute('type', 'hidden');
-            userCodeInput.setAttribute('name', 'userCode');
+            userCodeInput.type = 'hidden';
+            userCodeInput.name = 'userCode';
             userCodeInput.value = userCode;
-
+  
             const voteButton = document.createElement('button');
             voteButton.textContent = 'Подтвердить';
-
+  
             form.appendChild(userCodeInput);
             form.appendChild(voteButton);
-
-            // Добавляем обработчик события на кнопку "Проголосовать"
-            form.addEventListener('submit', event => {
-                event.preventDefault();
-
-                // Отправляем данные на сервер
-                const formData = new FormData(form);
-                const selectedCandidates = formData.getAll('candidate');
-                selectedCandidates.forEach(selectedCandidate => {
-                    fetch('/api/voting/vote', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            votingId: votingId,
-                            userId: getUserId(), 
-                            candidateId: selectedCandidate,
-                            userCode: userCode
-                        }),
-                        headers: {
-                            'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // Успешно проголосовали, выполнить необходимые действия
-                            console.log('Голос успешно засчитан');
-                            location.reload();
-                        } else {
-                            console.error('Ошибка при голосовании');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Ошибка при отправке запроса на сервер:', error);
-                    });
-                });
+  
+            form.addEventListener('submit', async event => {
+              event.preventDefault();
+  
+              const checkboxes = form.querySelectorAll('input[name="candidate"]:checked');
+              const selectedCandidates = Array.from(checkboxes).map(cb => cb.value);
+  
+              for (let candidate of selectedCandidates) {
+                const encryptedVotingId = await encryptData(votingId.toString(), publicKey);
+                const encryptedUserId = await encryptData(getUserId().toString(), publicKey);
+                const encryptedCandidateId = await encryptData(candidate, publicKey);
+                const encryptedUserCode = await encryptData(userCode, publicKey);
+  
+                fetch('/api/voting/vote', {
+                  method: 'POST',
+                  body: JSON.stringify({
+                    encryptedVotingId,
+                    encryptedUserId,
+                    encryptedCandidateId,
+                    encryptedUserCode,
+                  }),
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                })
+                  .then(response => {
+                    if (response.ok) {
+                      console.log('Голос успешно засчитан');
+                    } else {
+                      console.error('Ошибка при голосовании');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Ошибка при отправке запроса на сервер:', error);
+                  });
+              }
+  
+              location.reload();
             });
-
-            // Вставляем форму перед кнопкой "Participate" в карточке
+  
             card.insertBefore(form, participateButton.nextSibling);
-            
-        })
-        .catch(error => {
+          })
+          .catch(error => {
             console.error('Ошибка при получении списка кандидатов:', error);
-        });
-}
+          });
+      })
+      .catch(error => {
+        console.error('Ошибка при получении публичного ключа с сервера:', error);
+      });
+  }
 
 
-// Функция для шифрования данных
-async function encryptData(data, publicKey) {
-    const encoder = new TextEncoder();
-    const encryptedData = await crypto.subtle.encrypt(
-        { name: 'RSA-OAEP' },
-        publicKey,
-        encoder.encode(JSON.stringify(data))
-    );
-    return encryptedData;
-}
 
 
 
