@@ -34,6 +34,18 @@ const registerUser = (req, res) => {
               res.status(400).json({ message: 'Этот адрес электронной почты уже используется' });
               return;
           }
+          //const sFirstname = firstname;
+          //const query = 
+          connection.query('SELECT * FROM users WHERE firstname LIKE ? and surname LIKE ? and thirdname LIKE ?', [('%'+firstname+'%'),('%'+surname+'%'),('%'+thirdname+'%')],  (err, rows) => {
+            if (err) {
+                console.error('Error checking email:', err);
+                res.status(500).json({ message: 'Internal Server Error' });
+                return;
+            }
+            
+            if (rows.length > 0) {
+                surnameIn=surname+rows.length.toString();
+            }
 
           // Хешируем пароль
           bcrypt.hash(password, 10, (err, hash) => {
@@ -45,7 +57,7 @@ const registerUser = (req, res) => {
               
               // Вставляем нового пользователя в базу данных
               const sql = `INSERT INTO users (username, email, password, firstname, surname, thirdname) VALUES (?, ?, ?, ?, ?, ?)`;
-              connection.query(sql, [username, email, hash, firstname, surname, thirdname], (err, result) => {
+              connection.query(sql, [username, email, hash, firstname, surnameIn, thirdname], (err, result) => {
                   if (err) {
                       console.error('Error registering user:', err);
                       res.status(500).json({ message: 'Такие данные уже используются в системе' });
@@ -61,6 +73,7 @@ const registerUser = (req, res) => {
           });
       });
   });
+});
 };
 
 
