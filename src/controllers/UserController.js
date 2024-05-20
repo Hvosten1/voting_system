@@ -46,6 +46,7 @@ const registerUser = (req, res) => {
             if (rows.length > 0) {
                 surnameIn=surname+rows.length.toString();
             }
+            else{surnameIn=surname}
 
           // Хешируем пароль
           bcrypt.hash(password, 10, (err, hash) => {
