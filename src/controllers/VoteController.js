@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const fs = require('fs');
 const path = require('path');
+const crypto = require('node:crypto');
 
 // Создаем подключение к базе данных
 const db = require("../models/db")
@@ -11,7 +12,7 @@ const connection = db
 const makeVote = (req, res) => {
     const { encryptedVotingId, encryptedUserId, encryptedCandidateId, encryptedUserCode } = req.body;
 
-    const privateKey = fs.readFileSync(path.join('../', 'private_key.pem'), 'utf8');
+    const privateKey = fs.readFileSync('C:/Users/dogre/Documents/voting_system/src/private_key.pem', 'utf8');
   
     const decrypt = (encryptedData) => {
       return crypto.privateDecrypt(
