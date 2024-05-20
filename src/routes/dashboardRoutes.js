@@ -1,6 +1,6 @@
 // src/routes/dashboardRoutes.js
 
-const { getVotings, createVoting, deleteVoting, getVotingsForUser, getCandidatesForVoting, getParticipatedVotings } = require('../controllers/dashboardController.js');
+const { getVotings, createVoting, deleteVoting, getVotingsForUser, getCandidatesForVoting, getParticipatedVotings } = require('../controllers/DashboardController.js');
 
 const express = require('express');
 const router = express.Router();
