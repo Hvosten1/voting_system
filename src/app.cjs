@@ -45,7 +45,7 @@ async function generateKeys() {
     fs.writeFileSync(path.join(__dirname, 'private_key.pem'), privateKey);
   
     console.log('Keys generated successfully');
-  }
+}
   
 generateKeys().catch(err => {
     console.error('Error generating keys:', err);
