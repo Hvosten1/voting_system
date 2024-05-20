@@ -10,32 +10,8 @@ const registerUser = (req, res) => {
   const { username, email, password, firstname, surname, thirdname } = req.body;
   
   // Проверяем, не используется ли уже указанное имя пользователя
-  connection.query('SELECT * FROM users WHERE username = ?', [username], (err, rows) => {
-      if (err) {
-          console.error('Error checking username:', err);
-          res.status(500).json({ message: 'Internal Server Error' });
-          return;
-      }
-      
-      if (rows.length > 0) {
-          res.status(400).json({ message: 'Этот логин уже используется' });
-          return;
-      }
-
-      // Проверяем, не используется ли уже указанный адрес электронной почты
-      connection.query('SELECT * FROM users WHERE email = ?', [email], (err, rows) => {
-          if (err) {
-              console.error('Error checking email:', err);
-              res.status(500).json({ message: 'Internal Server Error' });
-              return;
-          }
+  
           
-          if (rows.length > 0) {
-              res.status(400).json({ message: 'Этот адрес электронной почты уже используется' });
-              return;
-          }
-          //const sFirstname = firstname;
-          //const query = 
           connection.query('SELECT * FROM users WHERE firstname LIKE ? and surname LIKE ? and thirdname LIKE ?', [('%'+firstname+'%'),('%'+surname+'%'),('%'+thirdname+'%')],  (err, rows) => {
             if (err) {
                 console.error('Error checking email:', err);
@@ -55,6 +31,32 @@ const registerUser = (req, res) => {
                   res.status(500).json({ message: 'Internal Server Error' });
                   return;
               }
+
+              const checkSql = `SELECT * FROM users WHERE username = ? OR email = ? OR password = ?`;
+        connection.query(checkSql, [username, email, hash], (err, results) => {
+            if (err) {
+                console.error('Error checking user:', err);
+                res.status(500).json({ message: 'Internal Server Error' });
+                return;
+            }
+
+            if (results.length > 0) {
+                let message = 'Такие данные уже используются в системе';
+                for (let result of results) {
+                    if (result.username === username) {
+                        message = 'Этот логин уже используется';
+                        break;
+                    } else if (result.email === email) {
+                        message = 'Этот адрес электронной почты уже используется';
+                        break;
+                    } else if (result.password === hash) {
+                        message = 'Этот пароль уже используется';
+                        break;
+                    }
+                }
+                res.status(400).json({ message });
+                return;
+            }
               
               // Вставляем нового пользователя в базу данных
               const sql = `INSERT INTO users (username, email, password, firstname, surname, thirdname) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -74,7 +76,6 @@ const registerUser = (req, res) => {
           });
       });
   });
-});
 };
 
 
