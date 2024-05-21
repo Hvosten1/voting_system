@@ -5,7 +5,7 @@ const db = require("../models/db")
 const connection = db
 
 
-
+// Функция для регистрации пользователя
 const registerUser = (req, res) => {
   const { username, email, password, firstname, surname, thirdname } = req.body;
   
@@ -71,14 +71,14 @@ const registerUser = (req, res) => {
                   res.cookie('id', result.insertId, { httpOnly: false });
                   
                   console.log('User registered successfully');
-                  res.status(201).json({ message: 'User registered successfully' });
+                  res.status(201).json({ message: 'User registered successfully', id: result.insertId });
               });
           });
       });
   });
 };
 
-
+// Функция для проверки входа в систему
 const loginUser = (req, res) => {
   const { username, password } = req.body;
   // Запрос на поиск пользователя по 
@@ -132,6 +132,7 @@ const getUsers = (req, res) => {
   });
 };
 
+// Функция для поиска блока в блокчейне по секретному ключу
 const searchBlockchain = (req, res) => {
   const secretKey  = req.params.secretKey;
   console.log(secretKey);

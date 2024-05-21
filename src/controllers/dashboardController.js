@@ -66,7 +66,7 @@ const createVoting = (req, res) => {
         })
       ])
       .then(() => {
-        res.status(201).json({ message: 'Vote created successfully' }); // Отправить ответ только после успешного выполнения всех запросов
+        res.status(201).json({ message: 'Vote created successfully', id:result.insertId }); // Отправить ответ только после успешного выполнения всех запросов
       })
       .catch(error => {
         console.error('Error creating vote:', error);

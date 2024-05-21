@@ -4,8 +4,7 @@ const db = require("../models/db")
 
 const connection = db
 
-
-
+// Функция отправки вопроса
 const sendQuestion = (req, res) => {
     const { userId, question } = req.body;
 
@@ -40,9 +39,10 @@ const getAllQuestions = (req, res) => {
     });
 };
 
+// Функция для ответа на заданный вопрос
 const answerQuestion = (req, res) => {
     const questionId = req.body.questionId;
-    const answer = req.body.answer; // Исправление тут
+    const answer = req.body.answer;
 
     // Проверка наличия ответа
     if (!answer) {
