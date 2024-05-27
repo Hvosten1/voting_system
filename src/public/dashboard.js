@@ -198,18 +198,18 @@ function participateInVoting(votingId, card, participateButton) {
               const selectedCandidates = Array.from(checkboxes).map(cb => cb.value);
   
               for (let candidate of selectedCandidates) {
-                const encryptedVotingId = await encryptData(votingId.toString(), publicKey);
-                const encryptedUserId = await encryptData(getUserId().toString(), publicKey);
-                const encryptedCandidateId = await encryptData(candidate, publicKey);
-                const encryptedUserCode = await encryptData(userCode, publicKey);
+                const encryptedFirstData = await encryptData(votingId.toString(), publicKey);
+                const encryptedSecondData = await encryptData(getUserId().toString(), publicKey);
+                const encryptedThirdData = await encryptData(candidate, publicKey);
+                const encryptedFourData = await encryptData(userCode, publicKey);
   
                 fetch('/api/voting/vote', {
                   method: 'POST',
                   body: JSON.stringify({
-                    encryptedVotingId,
-                    encryptedUserId,
-                    encryptedCandidateId,
-                    encryptedUserCode,
+                    encryptedFirstData,
+                    encryptedSecondData,
+                    encryptedThirdData,
+                    encryptedFourData,
                   }),
                   headers: {
                     'Content-Type': 'application/json',
