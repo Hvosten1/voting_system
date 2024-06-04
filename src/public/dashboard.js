@@ -179,6 +179,9 @@ function participateInVoting(votingId, card, participateButton) {
               form.appendChild(label);
               form.appendChild(document.createElement('br'));
             });
+
+            const userCodeLabel = document.createElement('label');
+            userCodeLabel.appendChild(document.createTextNode('Уникальный код'));
   
             const userCodeInput = document.createElement('input');
             userCodeInput.type = 'block';
@@ -187,6 +190,8 @@ function participateInVoting(votingId, card, participateButton) {
   
             const voteButton = document.createElement('button');
             voteButton.textContent = 'Подтвердить';
+            
+            form.appendChild(userCodeLabel);
   
             form.appendChild(userCodeInput);
             form.appendChild(voteButton);

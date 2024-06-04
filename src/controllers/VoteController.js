@@ -12,8 +12,8 @@ const privateKeyDir='C:/Users/dogre/Documents/voting_system/src/private_key.pem'
 
 // Функция для принятия и формирования голоса избирателя
 const makeVote = (req, res) => {
-    const { votingId, userId, candidateId, userCode } = req.body;
-    //const { encryptedFirstData, encryptedSecondData, encryptedThirdData, encryptedFourData } = req.body;
+    //const { votingId, userId, candidateId, userCode } = req.body;
+    const { encryptedFirstData, encryptedSecondData, encryptedThirdData, encryptedFourData } = req.body;
     
 
     const privateKey = fs.readFileSync(privateKeyDir, 'utf8');
@@ -30,10 +30,10 @@ const makeVote = (req, res) => {
     };
   
     try {
-      //const votingId = decrypt(encryptedFirstData);
-      //const userId = decrypt(encryptedSecondData);
-      //const candidateId = decrypt(encryptedThirdData);
-      //const userCode = decrypt(encryptedFourData);
+      const votingId = decrypt(encryptedFirstData);
+      const userId = decrypt(encryptedSecondData);
+      const candidateId = decrypt(encryptedThirdData);
+      const userCode = decrypt(encryptedFourData);
 
       //const votingId = encryptedVotingId;
       //const userId = encryptedUserId;
