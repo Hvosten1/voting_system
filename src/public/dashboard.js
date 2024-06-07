@@ -445,7 +445,7 @@ const loadVotes = async () => {
               <div class="voteDates">Начало: ${formatDateString(vote.start_date)}<br>Окончание: ${formatDateString(vote.end_date)}</div>
               <div class="voteTitle">Голосующих: ${vote.cnt}</div>
               <button class="showCandidatesBtn" data-voting-id="${vote.id}">Результаты кандидатов</button>
-              <div class="candidatesInfo" id="candidatesInfo_${vote.id}"></div>
+              <div class="candidatesInfo" id="candidatesInfo_${vote.id}" value=${vote.cnt}></div>
             `;
             votesContainer.appendChild(voteElement);
            
