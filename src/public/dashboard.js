@@ -443,6 +443,7 @@ const loadVotes = async () => {
             voteElement.innerHTML = `
               <div class="voteTitle">${vote.title}</div>
               <div class="voteDates">Начало: ${formatDateString(vote.start_date)}<br>Окончание: ${formatDateString(vote.end_date)}</div>
+              <div class="voteTitle">Голосующих: ${vote.cnt}</div>
               <button class="showCandidatesBtn" data-voting-id="${vote.id}">Результаты кандидатов</button>
               <div class="candidatesInfo" id="candidatesInfo_${vote.id}"></div>
             `;
@@ -482,13 +483,30 @@ const loadCandidatesInfo = async (votingId) => {
 
         // Очищаем контейнер перед добавлением новых данных
         candidatesInfoContainer.innerHTML = '';
+        let countCand = 0;
+
+        candidatesInfo.forEach(candidate => {
+            countCand+=candidate.votes;
+        });
+        
+        let countProc= ((countCand/candidatesInfoContainer.getAttribute('value'))*100).toFixed(2);
+
+        const candidateCount = document.createElement('div')
+        candidateCount.innerHTML=`
+         <div>Количество голосов: ${countCand} (${countProc}%)</div>
+         <div>------</div>
+        `
+        candidatesInfoContainer.appendChild(candidateCount);
+
 
         // Добавляем информацию о кандидатах в контейнер
         candidatesInfo.forEach(candidate => {
             const candidateElement = document.createElement('div');
+            let procent = ((candidate.votes/countCand)*100).toFixed(2);
             candidateElement.innerHTML = `
                 <div>Кандидат: ${candidate.v_option}</div>
                 <div>Количество голосов: ${candidate.votes}</div>
+                <div>Процент: ${procent}%</div>
                 <div>------</div>
             `;
             candidatesInfoContainer.appendChild(candidateElement);
