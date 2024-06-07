@@ -6,7 +6,9 @@ const connection = db
 
 // Функция для получения списка всех голосований
 const getVotings = (req, res) => {
-  const sql = `SELECT * FROM votings`;
+  const sql = `SELECT v.id, v.title, v.start_date, v.end_date, COUNT(vp.user_id) as cnt FROM votings v
+  JOIN voting_participants vp ON v.id = vp.voting_id
+  GROUP BY v.id`;
   connection.query(sql, (err, results) => {
     if (err) {
       console.error('Error getting votings:', err);
